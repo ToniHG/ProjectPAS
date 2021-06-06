@@ -8,10 +8,9 @@
     <string name="register_button">Register</string>
     <string name="login_buttton">Log In</string>
     <string name="logout_buttton">Log Out</string>
-    <string name="home_menu">Main menu</string>
+    <string name="menu_weather">Weather query(Choose one)</string>
+    <string name="choose_city">Choose your city</string>
+    <string name="choose_ip">Choose your IP</string>
+    <string name="weather_button">Get weather</string>
     <string name="light_buttton">Log Out</string>
-    <string name="logout_buttton">Log Out</string>
-    <string name="logout_buttton">Log Out</string>
-    <string name="logout_buttton">Log Out</string>
-    <string name="logout_buttton">Log Out</string>
 </resources>
