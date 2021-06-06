@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">MyAppPAS</string>
+    <string name="message_registration">Register a new user</string>
+    <string name="layout1">layoutTextData</string>
+    <string name="data_email">Email</string>
+    <string name="data_password">Password</string>
+    <string name="signin_buttton">Sign In</string>
+    <string name="register_button">Register</string>
+    <string name="login_buttton">Log In</string>
+    <string name="logout_buttton">Log Out</string>
+    <string name="home_menu">Main menu</string>
+    <string name="light_buttton">Log Out</string>
+    <string name="logout_buttton">Log Out</string>
+    <string name="logout_buttton">Log Out</string>
+    <string name="logout_buttton">Log Out</string>
+    <string name="logout_buttton">Log Out</string>
+</resources>

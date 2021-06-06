@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "971166614148",
+    "firebase_url": "https://proyectopas-8d444-default-rtdb.firebaseio.com",
+    "project_id": "proyectopas-8d444",
+    "storage_bucket": "proyectopas-8d444.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:971166614148:android:bf1d22f7669535215338d1",
+        "android_client_info": {
+          "package_name": "com.example.myapppas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "971166614148-um8eq84803ollvl5oaa4vglug7nkgs6b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPVHUw10Bin4_Fxugo660s4ZPWXfNmaq8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "971166614148-um8eq84803ollvl5oaa4vglug7nkgs6b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

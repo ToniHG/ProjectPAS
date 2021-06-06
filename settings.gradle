@@ -1,0 +1,2 @@
+rootProject.name = "MyAppPAS"
+include ':app'
