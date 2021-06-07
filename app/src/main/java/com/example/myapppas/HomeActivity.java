@@ -2,7 +2,10 @@ package com.example.myapppas;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,10 +31,11 @@ import org.json.JSONObject;
 public class HomeActivity extends AppCompatActivity {
     EditText city_text,ip_text;
     TextView detailsWeather;
+    dbWeatherManager myDBManager;
     //URL
     private final String baseURL = "https://api.weatherapi.com/v1/current.json?key=730f19e5d5104569ba6201930210606&q=";
     //Data of the weather
-    private String last_updated,temp_c,wind_kph,precip_mm,humidity,uv_intensity,co,no2,so2;
+    private String city,last_updated,temp_c,wind_kph,precip_mm,humidity,uv_intensity,co,no2,so2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,7 @@ public class HomeActivity extends AppCompatActivity {
         city_text = findViewById(R.id.editTextCity);
         ip_text = findViewById(R.id.editTextIP);
         detailsWeather = findViewById(R.id.weatherResults);
+        myDBManager = new dbWeatherManager(this.getBaseContext());
     }
 
     public void logOutSession(View view){
@@ -68,7 +73,7 @@ public class HomeActivity extends AppCompatActivity {
                     try{
                         JSONObject jsonResponse = new JSONObject(response);
                         JSONObject jsonObjectCurrent = jsonResponse.getJSONObject("current");
-                        String cityResponse = jsonResponse.getJSONObject("location").getString("name");
+                        city = jsonResponse.getJSONObject("location").getString("name");
                         last_updated = jsonObjectCurrent.getString("last_updated");
                         temp_c = jsonObjectCurrent.getString("temp_c");
                         wind_kph = jsonObjectCurrent.getString("wind_kph");
@@ -79,11 +84,11 @@ public class HomeActivity extends AppCompatActivity {
                         co = jsonObjectAIQ.getString("co");
                         no2 = jsonObjectAIQ.getString("no2");
                         so2 = jsonObjectAIQ.getString("so2");
-                        out[0] = out[0] + ("Weather in " + cityResponse + " " + last_updated
+                        out[0] = out[0] + ("Weather in " + city + " " + last_updated
                                 + "\n Temp (Cº): " + temp_c
                                 + "\n Wind (KPH): " + wind_kph
                                 + "\n Rain (MM): " + precip_mm
-                                + "\n Humidity: " + humidity
+                                + "\n Humidity(%): " + humidity
                                 + "\n Air Quality: "
                                 + "\n\t CO: " + co
                                 + "\n\t NO2: " + no2
@@ -107,5 +112,33 @@ public class HomeActivity extends AppCompatActivity {
             Toast.makeText(HomeActivity.this, "Both texts cannot be empty!!", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    public void saveDataWeather(View view){
+
+        boolean resultInsert;
+        SQLiteDatabase myWeatherDB = myDBManager.getWritableDatabase();
+        int rows = (int) DatabaseUtils.queryNumEntries(myWeatherDB, dbWeatherManager.weather_dbEntry.TABLE_NAME);
+        int nextRow = rows + 1;
+        //Creating the content values to save the data
+        ContentValues values = new ContentValues();
+        values.put(dbWeatherManager.weather_dbEntry.ID, String.valueOf(nextRow));
+        values.put(dbWeatherManager.weather_dbEntry.CITY, city);
+        values.put(dbWeatherManager.weather_dbEntry.DATE, last_updated);
+        values.put(dbWeatherManager.weather_dbEntry.TEMP, temp_c);
+        values.put(dbWeatherManager.weather_dbEntry.WIN, wind_kph);
+        values.put(dbWeatherManager.weather_dbEntry.HUM, humidity);
+        values.put(dbWeatherManager.weather_dbEntry.RAIN, precip_mm);
+        values.put(dbWeatherManager.weather_dbEntry.UVI, uv_intensity);
+        values.put(dbWeatherManager.weather_dbEntry.CO, co);
+        values.put(dbWeatherManager.weather_dbEntry.NO2, no2);
+        values.put(dbWeatherManager.weather_dbEntry.SO2, so2);
+        resultInsert = myDBManager.insertDataWeather(myWeatherDB,values);
+        if(resultInsert){
+            Toast.makeText(HomeActivity.this, "Data saved in local database.", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Toast.makeText(HomeActivity.this, "There was some problem saving the data.", Toast.LENGTH_SHORT).show();
+        }
     }
 }
