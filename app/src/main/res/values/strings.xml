@@ -13,4 +13,6 @@
     <string name="choose_ip">Choose your IP</string>
     <string name="weather_button">Get weather</string>
     <string name="save_button">Save data</string>
+    <string name="sensors_button">Sensors data</string>
+    <string name="send_data">Send data to cloud</string>
 </resources>

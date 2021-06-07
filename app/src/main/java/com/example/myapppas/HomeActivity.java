@@ -3,9 +3,15 @@ package com.example.myapppas;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,14 +34,31 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class HomeActivity extends AppCompatActivity {
+    //Data entry for weather
     EditText city_text,ip_text;
+    //Output for the weather data
     TextView detailsWeather;
+    //Local database for weather
     dbWeatherManager myDBManager;
     //URL
     private final String baseURL = "https://api.weatherapi.com/v1/current.json?key=730f19e5d5104569ba6201930210606&q=";
     //Data of the weather
     private String city,last_updated,temp_c,wind_kph,precip_mm,humidity,uv_intensity,co,no2,so2;
+    //Data of the sensors
+    private SensorManager sensorManager;
+    private Sensor sensorLux, sensorHum, sensorTemp, sensorPress;
+    private float valueLigth,valueHum,valueTemp, valuePress;
+    //Output for the weather data
+    TextView detailsSensors;
+    //Database Firebase Realtime Sensors
+    FirebaseDatabase dbSensors;
+    DatabaseReference dbRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +68,39 @@ public class HomeActivity extends AppCompatActivity {
         ip_text = findViewById(R.id.editTextIP);
         detailsWeather = findViewById(R.id.weatherResults);
         myDBManager = new dbWeatherManager(this.getBaseContext());
+        detailsSensors = findViewById(R.id.sensorsResults);
+        sensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
+        sensorPress = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+        sensorTemp = sensorManager.getDefaultSensor(Sensor.TYPE_TEMPERATURE);
+        sensorHum = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
+        sensorLux = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        sensorManager.registerListener((SensorEventListener) mSensorListener,sensorPress, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener((SensorEventListener) mSensorListener,sensorTemp, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener((SensorEventListener) mSensorListener,sensorHum, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener((SensorEventListener) mSensorListener,sensorLux, SensorManager.SENSOR_DELAY_NORMAL);
+        dbSensors = FirebaseDatabase.getInstance();
+        dbRef = dbSensors.getReference("user");
     }
+
+    private SensorEventListener mSensorListener = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            if (event.sensor.getType() == Sensor.TYPE_PRESSURE){
+                valuePress = event.values[0];
+            }else if (event.sensor.getType() == Sensor.TYPE_TEMPERATURE){
+                valueTemp = event.values[0];
+            }else if (event.sensor.getType() == Sensor.TYPE_RELATIVE_HUMIDITY){
+                valueHum = event.values[0];
+            }else if (event.sensor.getType() ==Sensor.TYPE_LIGHT){
+                valueLigth = event.values[0];
+            }
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            //Nothing to do
+        }
+    };
 
     public void logOutSession(View view){
         FirebaseAuth.getInstance().signOut();
@@ -140,5 +195,34 @@ public class HomeActivity extends AppCompatActivity {
         else {
             Toast.makeText(HomeActivity.this, "There was some problem saving the data.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void getSensorsData(View view){
+        final String[] out = {""};
+        //Generate the output valueLigth, valueHum, valueGrav, valueTemp, valuePress;
+        out[0] = out[0] + ("Data from the sensors: "
+                + "\n Ligth (Lux): " + String.valueOf(valueLigth)
+                + "\n Humidity (%): " + String.valueOf(valueHum)
+                + "\n Temperature (C): " + String.valueOf(valueTemp)
+                + "\n Pressure (hPa): " + String.valueOf(valuePress));
+        Toast.makeText(HomeActivity.this, "Data from sensors showed.", Toast.LENGTH_SHORT).show();
+        detailsSensors.setText(out[0]);
+    }
+
+    public void sendDatatoCloud(View view){
+        String out = "";
+        out = out + ("Ligth(Lux)=" + String.valueOf(valueLigth)
+                + ",\n Humidity(%)=" + String.valueOf(valueHum)
+                + ",\n Temperature(C)=" + String.valueOf(valueTemp)
+                + ",\n Pressure (hPa)=" + String.valueOf(valuePress));
+        //dbRef.setValue(FirebaseAuth.getInstance().getCurrentUser());
+        List<Map<String, String>> listData = new ArrayList<Map<String, String>>();
+        Map<String, String> dataToSave = new HashMap<>();
+        dataToSave.put("Ligth(Lux)",String.valueOf(valueLigth));
+        dataToSave.put("Humidity(%)",String.valueOf(valueHum));
+        dataToSave.put("Temperature(C)",String.valueOf(valueTemp));
+        dataToSave.put("Pressure(hPa)",String.valueOf(valuePress));
+        listData.add(dataToSave);
+        dbRef.setValue(listData);
     }
 }

@@ -8,27 +8,35 @@
 
     <Button
         android:id="@+id/logOutButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="40dp"
+        android:layout_width="110dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="28dp"
+        android:background="#000000"
+        android:backgroundTint="#000000"
         android:onClick="logOutSession"
         android:text="@string/logout_buttton"
+        android:textStyle="bold"
+        app:icon="@android:drawable/ic_menu_close_clear_cancel"
+        app:iconTint="#020202"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:rippleColor="#020202" />
 
     <EditText
         android:id="@+id/editTextWeather"
-        android:layout_width="230dp"
-        android:layout_height="45dp"
+        android:layout_width="236dp"
+        android:layout_height="44dp"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="28dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="@string/menu_weather"
         android:textAllCaps="false"
-        android:textColor="#C50A0A"
+        android:textColor="@color/material_on_background_emphasis_high_type"
         android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/logOutButton"
+        app:layout_constraintHorizontal_bias="0.325"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -60,7 +68,7 @@
         android:id="@+id/weatherButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:onClick="getWeather"
         android:text="@string/weather_button"
@@ -68,6 +76,7 @@
         app:layout_constraintTop_toBottomOf="@+id/logOutButton" />
 
     <ScrollView
+        android:id="@+id/scrollViewWeather"
         android:layout_width="289dp"
         android:layout_height="175dp"
         android:layout_marginStart="13dp"
@@ -88,10 +97,50 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="29dp"
-        android:text="@string/save_button"
+        android:layout_marginEnd="28dp"
         android:onClick="saveDataWeather"
+        android:text="@string/save_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/weatherButton" />
+
+    <Button
+        android:id="@+id/sensorsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/sensors_button"
+        android:onClick="getSensorsData"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollViewWeather" />
+
+    <Button
+        android:id="@+id/sendButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/send_data"
+        android:onClick="sendDatatoCloud"
+        app:layout_constraintStart_toEndOf="@+id/sensorsButton"
+        app:layout_constraintTop_toBottomOf="@+id/scrollViewWeather" />
+
+    <ScrollView
+        android:id="@+id/scrollViewSensors"
+        android:layout_width="289dp"
+        android:layout_height="175dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginBottom="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sendButton"
+        app:layout_constraintVertical_bias="0.0">
+
+        <TextView
+            android:id="@+id/sensorsResults"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
